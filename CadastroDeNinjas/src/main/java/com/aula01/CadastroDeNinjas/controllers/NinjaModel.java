@@ -17,15 +17,17 @@ public class NinjaModel {
 	private String nome;
 	private String email;
 	private int idade;
+	private int rank;
 	
 	public NinjaModel () {
 		
 	}
 	
-	public NinjaModel(String nome, String email, int idade) {
+	public NinjaModel(String nome, String email, int idade, int rank) {
 		this.nome = nome;
 		this.email = email;
 		this.idade = idade;
+		this.rank = rank;
 	}
 
 	public String getNome() {
@@ -51,6 +53,15 @@ public class NinjaModel {
 	public void setIdade(int idade) {
 		this.idade = idade;
 	}
+
+	public int getRank() {
+		return rank;
+	}
+
+	public void setRank(int rank) {
+		this.rank = rank;
+	}
+	
 	
 	
 	
