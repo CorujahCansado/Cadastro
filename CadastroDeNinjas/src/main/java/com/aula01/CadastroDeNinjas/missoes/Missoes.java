@@ -1,5 +1,10 @@
 package com.aula01.CadastroDeNinjas.missoes;
 
+import java.util.List;
+
+import com.aula01.CadastroDeNinjas.controllers.NinjaModel;
+
+import jakarta.persistence.ElementCollection;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -23,6 +28,10 @@ public class Missoes {
 	private int quantidadeDaMissaoFracassada;
 	private String categoriaMissao;
 	
+    @ElementCollection
+    private List<Long> ninjasParticipantes; // IDs dos ninjas
+
+	
 	public Missoes(String nome, String descricao, int levelMissao, String localMissao, String recompensaMissao,
 			boolean statusMissao, String dataMissaoAceita, String dataMissaoFinalizada, String dataMissaoFracassada,
 			int quantidadeDaMissaoFracassada, String categoriaMissao) {
@@ -38,6 +47,29 @@ public class Missoes {
 		this.quantidadeDaMissaoFracassada = quantidadeDaMissaoFracassada;
 		this.categoriaMissao = categoriaMissao;
 	}
+	
+	public boolean aceitarMissao(List<NinjaModel> equipe) {
+        int rankMaisBaixo = equipe.stream().mapToInt(NinjaModel::getRank).min().orElse(Integer.MAX_VALUE);
+        int rankTotal = equipe.stream().mapToInt(NinjaModel::getRank).sum();
+
+        if (CategoriaMissoes.podeAceitarMissao(rankMaisBaixo, categoriaMissao, rankTotal)) {
+            this.ninjasParticipantes = equipe.stream().map(NinjaModel::getId).toList();
+            this.statusMissao = true;
+            return true;
+        }
+        return false;
+    }
+
+    public void desistirMissao() {
+        this.statusMissao = false;
+        this.ninjasParticipantes.clear();
+    }
+
+    public void registrarFracasso() {
+        this.quantidadeDaMissaoFracassada++;
+        this.statusMissao = false;
+    }
+
 
 	public String getNome() {
 		return nome;

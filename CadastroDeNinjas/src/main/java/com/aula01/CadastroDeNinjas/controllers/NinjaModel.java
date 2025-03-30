@@ -62,7 +62,9 @@ public class NinjaModel {
 		this.rank = rank;
 	}
 	
-	
+	public long getId () {
+		return id;
+	}
 	
 	
 }
