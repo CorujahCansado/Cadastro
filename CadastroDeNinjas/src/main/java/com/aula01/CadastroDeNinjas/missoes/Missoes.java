@@ -4,11 +4,13 @@ import java.util.List;
 
 import com.aula01.CadastroDeNinjas.controllers.NinjaModel;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.ElementCollection;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 
 @Entity
@@ -31,7 +33,9 @@ public class Missoes {
 	private String categoriaMissao;
 	
     @ElementCollection
+    @OneToMany(mappedBy = "missao", cascade = CascadeType.ALL)
     private List<Long> ninjasParticipantes; // IDs dos ninjas
+    
 
 	
 	public Missoes(String nome, String descricao, int levelMissao, String localMissao, String recompensaMissao,
@@ -160,7 +164,10 @@ public class Missoes {
 	public void setCategoriaMissao(String categoriaMissao) {
 		this.categoriaMissao = categoriaMissao;
 	}
-	
-	
+
+	public List<Long> getNinjasParticipantes() {
+		return ninjasParticipantes;
+	}
+
 
 }

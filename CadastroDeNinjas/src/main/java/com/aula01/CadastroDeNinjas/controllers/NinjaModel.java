@@ -1,9 +1,13 @@
 package com.aula01.CadastroDeNinjas.controllers;
 
+import com.aula01.CadastroDeNinjas.missoes.Missoes;
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 
 //Entity transforma uma classe em uma entidade do Banco De Dados
@@ -18,6 +22,11 @@ public class NinjaModel {
 	private String email;
 	private int idade;
 	private int rank;
+	
+	@ManyToOne
+	@JoinColumn(name = "missao_id")
+    private Missoes Missao;
+
 	
 	public NinjaModel () {
 		
@@ -64,6 +73,14 @@ public class NinjaModel {
 	
 	public long getId () {
 		return id;
+	}
+
+	public Missoes getMissao() {
+		return Missao;
+	}
+
+	public void setMissao(Missoes missao) {
+		Missao = missao;
 	}
 	
 	

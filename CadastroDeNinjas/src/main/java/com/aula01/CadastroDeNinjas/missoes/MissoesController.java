@@ -1,23 +1,17 @@
 package com.aula01.CadastroDeNinjas.missoes;
+import com.aula01.CadastroDeNinjas.controllers.NinjaModel;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Optional;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-
-import com.aula01.CadastroDeNinjas.controllers.NinjaModel;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/missoes")
 public class MissoesController {
-	
+
     @Autowired
     private MissoesRepository missoesRepository;
 
@@ -36,6 +30,17 @@ public class MissoesController {
         Optional<Missoes> missaoOpt = missoesRepository.findById(id);
         if (missaoOpt.isPresent()) {
             Missoes missao = missaoOpt.get();
+            
+            // Verifica se algum ninja já está em outra missão
+            List<Long> idsNinjas = equipe.stream().map(NinjaModel::getId).collect(Collectors.toList());
+            List<Missoes> missoesAtivas = missoesRepository.findAll();
+            for (Missoes m : missoesAtivas) {
+                if (m.isStatusMissao() && m.getNinjasParticipantes().stream().anyMatch(idsNinjas::contains)) {
+                    return ResponseEntity.badRequest().body("Um ou mais ninjas já estão em outra missão ativa.");
+                }
+            }
+            
+            // Tenta aceitar a missão
             if (missao.aceitarMissao(equipe)) {
                 missoesRepository.save(missao);
                 return ResponseEntity.ok("Missão aceita com sucesso!");
@@ -69,5 +74,4 @@ public class MissoesController {
         }
         return ResponseEntity.notFound().build();
     }
-
 }
